@@ -54,11 +54,11 @@ def maxpool2d(x, k=2):
 
 
 # 定义两个卷积层， 一个全连接层作为网络输出
-def conv_net(x, weights, biases, dropout):
-    x = tf.reshape(x, shape=[-1, 28, 28, 1])
+def conv_net(x_, weights, biases, dropout_):
+    x_ = tf.reshape(x_, shape=[-1, 28, 28, 1])
     #     x = tf.reshape(x, shape = [-1, 32, 32, 1])
 
-    conv1 = conv2d(x, weights['wc1'], biases['bc1'])
+    conv1 = conv2d(x_, weights['wc1'], biases['bc1'])
     conv1 = maxpool2d(conv1, k=2)
 
     conv2 = conv2d(conv1, weights['wc2'], biases['bc2'])
@@ -71,7 +71,7 @@ def conv_net(x, weights, biases, dropout):
     # relu
     fc1 = tf.nn.relu(fc1)
     # dropout
-    fc1 = tf.nn.dropout(fc1, dropout)
+    fc1 = tf.nn.dropout(fc1, dropout_)
 
     out = tf.add(tf.matmul(fc1, weights['out']), biases['out'])
 
@@ -79,10 +79,17 @@ def conv_net(x, weights, biases, dropout):
 
 
 with tf.Session() as sess:
+    # 加载计算图
     saver = tf.train.import_meta_graph('./model.ckpt.meta')
+    # 运行计算图
     sess.run(tf.global_variables_initializer())
 
     graph = tf.get_default_graph()
+    node_list = graph.get_operations()
+
+    # for i in node_list:
+    #     print(i)
+
     # 权重
     w = {
         # 5x5 conv, 1 input, 32 output
@@ -94,6 +101,8 @@ with tf.Session() as sess:
         # 输出层 1024input， n类输出
         'out': graph.get_tensor_by_name('out_w:0')
     }
+
+    print(sess.run(w['wc1']))
     # biases
     b = {
         'bc1': graph.get_tensor_by_name('bc1:0'),
@@ -103,16 +112,15 @@ with tf.Session() as sess:
     }
     image = batch_x[0]
 
-    plt.imshow(image.reshape(28, 28))
-    plt.show()
+    # plt.imshow(image.reshape(28, 28))
+    # plt.show()
+
     y_pre = conv_net(image, w, b, 1)
 
     print(y_pre.eval())
-    prediction = tf.argmax(y_pre)
+    prediction = tf.argmax(y_pre, axis=1)
 
     print("真实结果：{}".format(np.argmax(batch_y[0])))
 
     print('识别结果:')
     print(prediction.eval())
-    output = [prediction.eval()]
-    print(np.argmax(output))

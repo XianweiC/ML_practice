@@ -51,7 +51,7 @@ def plotMidText(cntrPt, parentPt, txtString):
    yMid = (parentPt[1] + cntrPt[1]) / 2.0
    createPlot.ax1.text(xMid, yMid, txtString)
 
-
+# 画出决策树
 def plotTree(myTree, parentPt, nodeTxt):
    numLeafs = getNumLeafs(myTree)
    depth = getTreeDepth(myTree)
@@ -73,7 +73,7 @@ def plotTree(myTree, parentPt, nodeTxt):
                      , cntrPt, str(key))
    plotTree.y0ff = plotTree.y0ff + 1.0 / plotTree.totalD
 
-
+# 建立决策树
 def createPlot(inTree):
    fig = plt.figure(1, facecolor='white')
    fig.clf()
@@ -85,6 +85,7 @@ def createPlot(inTree):
    plotTree.y0ff = 1.0
    plotTree(inTree, (0.5, 1.0), '')
    plt.show()
+
 
 if __name__=='__main__':
     createPlot()

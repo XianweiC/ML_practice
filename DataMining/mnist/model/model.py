@@ -26,9 +26,9 @@ from tensorflow.examples.tutorials.mnist import input_data
 
 mnist = input_data.read_data_sets("MNIST_data/", one_hot='true')
 
-x = tf.placeholder(tf.float32, [None, n_input], name='n_input')
-y = tf.placeholder(tf.float32, [None, n_classes], name='n_classes')
-keep_prob = tf.placeholder(tf.float32, name='keep_prob')
+x = tf.placeholder(tf.float32, [None, n_input])
+y = tf.placeholder(tf.float32, [None, n_classes])
+keep_prob = tf.placeholder(tf.float32)
 
 
 # 给定卷集步幅
@@ -68,7 +68,7 @@ def conv_net(x, weights, biases, dropout):
     out = tf.add(tf.matmul(fc1, weights['out']), biases['out'])
 
     # 保存模型输出
-    tf.add_to_collection('network-output', out)
+    # tf.add_to_collection('network-output', out)
 
     return out
 
@@ -143,6 +143,11 @@ with tf.Session() as sess:
     saver = tf.train.Saver()
     model_path = './model.ckpt'
     save_path = saver.save(sess, model_path)
+
+    #  保存计算图
+    graph = tf.summary.merge_all()
+    tf.summary.FileWriter('/summary', graph)
+
 
 import matplotlib.pyplot as plt
 
