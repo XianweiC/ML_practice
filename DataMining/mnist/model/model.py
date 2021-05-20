@@ -148,7 +148,6 @@ with tf.Session() as sess:
     graph = tf.summary.merge_all()
     tf.summary.FileWriter('/summary', graph)
 
-
 import matplotlib.pyplot as plt
 
 eval_indices = range(0, training_iters, display_step)
@@ -166,5 +165,3 @@ plt.xlabel('Generation')
 plt.ylabel('Accuracy')
 plt.legend(loc='lower right')
 plt.show()
-
-
